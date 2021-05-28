@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "1040535165663",
+    "firebase_url": "https://allaboutpet-1c6f3-default-rtdb.firebaseio.com",
+    "project_id": "allaboutpet-1c6f3",
+    "storage_bucket": "allaboutpet-1c6f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040535165663:android:136eb4022c30ac2cfd276a",
+        "android_client_info": {
+          "package_name": "com.example.aap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040535165663-kra14bo8n533pf4q2vilqm3fa8c41mgu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArdOH9WYGlhPC1gIMoRtm4zcXT24l9E8Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040535165663-kra14bo8n533pf4q2vilqm3fa8c41mgu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040535165663:android:d871837dd1bb321efd276a",
+        "android_client_info": {
+          "package_name": "com.example.allaboutpet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040535165663-kra14bo8n533pf4q2vilqm3fa8c41mgu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArdOH9WYGlhPC1gIMoRtm4zcXT24l9E8Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040535165663-kra14bo8n533pf4q2vilqm3fa8c41mgu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040535165663:android:f6ef418907f25516fd276a",
+        "android_client_info": {
+          "package_name": "com.youmaging.aapapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040535165663-kra14bo8n533pf4q2vilqm3fa8c41mgu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArdOH9WYGlhPC1gIMoRtm4zcXT24l9E8Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040535165663-kra14bo8n533pf4q2vilqm3fa8c41mgu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
