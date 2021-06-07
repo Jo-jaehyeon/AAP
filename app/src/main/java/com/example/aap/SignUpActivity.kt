@@ -1,20 +1,24 @@
 package com.example.aap
 
-import android.accounts.Account
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.example.aap.databinding.ActivitySignUpBinding
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 class SignUpActivity : AppCompatActivity() {
     lateinit var binding: ActivitySignUpBinding
 
     lateinit var rdb: DatabaseReference
 
+    var flag = -1
+    var flag2 = -1
+    val DELAYMILLI = 1700.toLong()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,52 +28,64 @@ class SignUpActivity : AppCompatActivity() {
         init()
     }
 
-    private fun clearInput(){
-        binding.apply{
-            SUidinput.text.clear()
-            SUpwdinput.text.clear()
-        }
+
+    private fun checkID(idk: String) {
+        rdb = FirebaseDatabase.getInstance().getReference("Accounts").child(idk)
+        rdb.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {}
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val data = snapshot.value.toString() //{id=<id>, pwd=<pwd>}
+
+                if(data == "null"){
+                    flag = 0    //중복되는 아이디 없음
+                    flag2 = 1 //중복확인해줌
+                }else{
+                    flag = 1
+                }
+            }
+        })
+
     }
 
 
 
     private fun init() {
-        var flag1 = 0
-        var flag2 = 1
-
-        rdb = FirebaseDatabase.getInstance().getReference("Accounts")
+        val handler = Handler()
 
         //아이디 중복확인
         binding.idconfirm.setOnClickListener {
-            /*아이디 중복확인. toast message띄워주기 or 상단에 messagebox*/
-            //flag1 = 1
+            val suid = binding.SUidinput.text.toString()
+            rdb = FirebaseDatabase.getInstance().getReference("Accounts").child(suid)
 
-            if(flag1 == 0){
-                //아이디가 맞지 않으면
-                binding.SUwarnmsg.visibility = View.VISIBLE
-            }
-            else{
-                //아이디 중복확인 눌렀는지 확인해주기
-                flag2 = 1
-            }
+            checkID(suid)
+
+            handler.postDelayed({
+                when (flag) {
+                    0 -> Toast.makeText(this, "아이디 사용이 가능합니다.", Toast.LENGTH_SHORT).show()
+                    1 -> {
+                        Toast.makeText(this, "이미 사용중인 아이디가 있습니다.", Toast.LENGTH_SHORT).show()
+                        flag = -1
+                    }
+                }
+
+            }, DELAYMILLI)
         }
 
-        //성공하면
-        if(flag2 == 1) {
-            binding.SUSUbtn.setOnClickListener {
+        binding.SUSUbtn.setOnClickListener {
+            //성공하면
+            if (flag2 == 1) {
                 //데이터베이스에 삽입
-                val item =
-                    Account(binding.SUidinput.text.toString(), binding.SUpwdinput.text.toString())
-                rdb.child(binding.SUidinput.text.toString()).setValue(item)
+                val item = Account(binding.SUidinput.text.toString(), binding.SUpwdinput.text.toString())
+                rdb.setValue(item)
 
                 val intent = Intent()
                 setResult(Activity.RESULT_OK, intent)
                 finish()
+
+            } else {
+                //중복확인 하라고 띄워주기
+                Toast.makeText(this, "아이디 중복확인을 해주세요.", Toast.LENGTH_SHORT).show()
             }
-        }
-        else{
-            //중복확인 하라고 띄워주기
-            binding.SUwarnmsg.visibility = View.VISIBLE
         }
 
     }

@@ -8,17 +8,6 @@
     android:visibility="visible"
     tools:context=".SignInActivity">
 
-    <Button
-        android:id="@+id/SIwarnmsg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="7dp"
-        android:backgroundTint="#FFD0D0"
-        android:textColor="#FD0000"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
