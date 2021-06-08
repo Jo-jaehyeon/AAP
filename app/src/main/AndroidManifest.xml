@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.aap">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -9,7 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AAP">
-        <activity android:name=".SignUpActivity"></activity>
+        <activity
+            android:name=".PetInfo.PetInfoActivity"
+            android:theme="@style/Theme.AAP.NoActionBar"></activity>
+        <activity android:name=".PetInfo.PetPlusActivity" />
+        <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity" />
         <activity android:name=".SignIOActivity" />
         <activity android:name=".LoadingActivity">
