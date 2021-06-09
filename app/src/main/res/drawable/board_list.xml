@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- drawable/listing_ins.xml -->
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="327dp"
+    android:height="108dp"
+    android:viewportWidth="327"
+    android:viewportHeight="108"
+    >
+
+    <group>
+
+        <clip-path
+            android:pathData="M16 0H311C319.837 0 327 7.16344 327 16V92C327 100.837 319.837 108 311 108H16C7.16344 108 0 100.837 0 92V16C0 7.16344 7.16344 0 16 0Z"
+            />
+
+        <path
+            android:pathData="M0 0V108H327V0"
+            android:fillColor="#FFCDAF"
+            />
+
+    </group>
+
+</vector>

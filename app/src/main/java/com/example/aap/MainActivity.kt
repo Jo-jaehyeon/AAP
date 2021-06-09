@@ -2,13 +2,12 @@ package com.example.aap
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.aap.MyFragStateAdapter
 import com.example.aap.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
-    val textarr = arrayListOf<String>("펫 정보", "일정관리", "물품관리", "검색", "커뮤니티")
+    val textarr = arrayListOf<String>("펫 정보", "일정 관리", "물품 관리", "검색", "게시판", "보호소")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,4 +23,5 @@ class MainActivity : AppCompatActivity() {
             tab.text = textarr[position]
         }.attach()
     }
+
 }
