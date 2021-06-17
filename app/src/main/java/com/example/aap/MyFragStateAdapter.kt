@@ -6,6 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.aap.Community.BoardFragment
 import com.example.aap.Community.GalleryFragment
 import com.example.aap.GoodsManage.GoodsFragment
+import com.example.aap.PetInfo.PetInfoFragment
 import com.example.aap.Schedule.ScheduleFragment
 
 class MyFragStateAdapter(fragmentActivity: FragmentActivity):FragmentStateAdapter(fragmentActivity) {

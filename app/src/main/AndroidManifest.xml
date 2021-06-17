@@ -3,9 +3,9 @@
     package="com.example.aap">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
-        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,9 +21,16 @@
         <activity android:name=".Community.BoardWriteActivity" />
 
         <activity android:name=".SignUpActivity" />
+        <activity
+            android:name=".PetInfo.PetInfoActivity"
+            android:theme="@style/Theme.AAP.NoActionBar"></activity>
+        <activity android:name=".PetInfo.PetPlusActivity" />
+        <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity" />
         <activity android:name=".SignIOActivity" />
-        <activity android:name=".LoadingActivity">
+        <activity
+            android:name=".LoadingActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

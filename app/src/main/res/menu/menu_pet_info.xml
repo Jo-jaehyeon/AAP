@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.aap.PetInfo.PetInfoActivity">
+    <item
+        android:id="@+id/remove"
+        android:orderInCategory="100"
+        android:title="삭제"
+        app:showAsAction="always" />
+</menu>

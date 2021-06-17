@@ -24,12 +24,12 @@ class LoadingActivity : AppCompatActivity() {
             val intent = Intent(this, SignIOActivity::class.java)
             startActivity(intent)
             finish()
-        },5000)
+        },3000)
 
         /*이 프로젝트에서는 실행이 안됨. 차후 수정 예정*/
         binding.skipbtn.setOnClickListener {
             handler.removeCallbacks {
-                val intent = Intent(this, SignIOActivity::class.java)
+                val intent = Intent(this, SignInActivity::class.java)
                 startActivity(intent)
             }
         }
