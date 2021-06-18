@@ -6,12 +6,17 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.example.aap.Alarm.ScheduleAlarmReceiver
+import com.example.aap.PetInfo.PetIdName
+import com.example.aap.PetInfo.PetInfoDBHelper
 import com.example.aap.R
 import com.example.aap.databinding.ChecklistBinding
 import com.example.aap.databinding.FragmentScheduleBinding
@@ -25,6 +30,7 @@ class ScheduleFragment : Fragment() {
     var mymonth = 0
     var mydayOfMonth = 0
     lateinit var dbHelper: DBHelper
+    lateinit var petDBHelper : PetInfoDBHelper
 
     //임의의값
     var petId: Int = 0
@@ -44,6 +50,7 @@ class ScheduleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initSpinner()
         initAlarm()
         init()
 
@@ -239,5 +246,52 @@ class ScheduleFragment : Fragment() {
             alarmManager.cancel(pendingIntent)
         }
     }
+
+    fun initSpinner() {
+        petDBHelper = PetInfoDBHelper(requireActivity())
+
+        //안드로이드에서 기본적으로 제공하는 레이아웃(두번째 인자)에 string배열 값을(세번째 인자)를 매핑하는 어뎁터 생성
+        val adapter = ArrayAdapter<String>(
+                requireActivity(),
+                R.layout.spinner_item,
+                java.util.ArrayList<String>()
+        )
+
+        val petList: java.util.ArrayList<PetIdName> = petDBHelper.getAllPetIDName()
+        for (i in 0 until petList.size) {
+            adapter.add(petList[i].name)
+            Log.i("pet name" , petList[i].name)
+        }
+
+
+
+        binding!!.apply {
+            scheduleSpinner.adapter = adapter
+
+            if(!scheduleSpinner.adapter.isEmpty) {
+                scheduleSpinner.setSelection(0)
+            }
+
+            scheduleSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+                override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                ) {
+                    petId = petList[position].id
+                    getAllRecord(myyear, mymonth, mydayOfMonth, binding!!, petId)
+                }
+
+            }
+
+
+        }
+    }
+
 
 }

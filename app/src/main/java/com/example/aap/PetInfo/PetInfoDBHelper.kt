@@ -165,12 +165,12 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
 
         if(cursor.count != 0) {
             val temp = PetInfo(
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getInt(3),
-                cursor.getInt(4),
-                cursor.getInt(5),
-                cursor.getString(6)
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    cursor.getInt(3),
+                    cursor.getInt(4),
+                    cursor.getInt(5),
+                    cursor.getString(6)
             )
             cursor.close()
             db.close()
@@ -180,12 +180,12 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         else
         {
             val temp = PetInfo(
-                "",
-                "",
-                0,
-                0,
-                0,
-                ""
+                    "",
+                    "",
+                    0,
+                    0,
+                    0,
+                    ""
             )
             cursor.close()
 
@@ -318,6 +318,26 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         db.update(TABLE_NAME1, values, "$PID=?", arrayOf(pid.toString()))
     }
 
+    fun getAllPetIDName(): ArrayList<PetIdName>
+    {
+        val strsql = "select * from $TABLE_NAME1;"
+        val db = readableDatabase
 
+        val cursor = db.rawQuery(strsql, null)
+        cursor.moveToFirst()
+
+        var petlist = ArrayList<PetIdName>()
+
+        if (cursor.count != 0) {
+            do {
+                val temp = PetIdName(cursor.getInt(0), cursor.getString(1))
+                petlist.add(temp)
+            }while (cursor.moveToNext())
+        }
+
+        cursor.close()
+
+        return petlist
+    }
 
 }

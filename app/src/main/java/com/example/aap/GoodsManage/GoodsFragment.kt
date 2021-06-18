@@ -13,8 +13,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.example.aap.Alarm.GoodsAlarmReceiver
+import com.example.aap.PetInfo.PetIdName
+import com.example.aap.PetInfo.PetInfoDBHelper
 import com.example.aap.R
 import com.example.aap.databinding.FragmentGoodsBinding
 import com.example.aap.databinding.GoodslistBinding
@@ -32,7 +36,8 @@ import kotlin.collections.ArrayList
 class GoodsFragment : Fragment() {
     var binding: FragmentGoodsBinding? = null
     lateinit var dbHelper: GoodsDBHelper
-    var petId : Int = 0
+    lateinit var petDBHelper: PetInfoDBHelper
+    var petId: Int = 0
 
     lateinit var calendar: Calendar
     lateinit var myintent: Intent
@@ -40,10 +45,9 @@ class GoodsFragment : Fragment() {
     var pendingIntent: PendingIntent? = null
 
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
 
         binding = FragmentGoodsBinding.inflate(inflater, container, false)
@@ -52,9 +56,9 @@ class GoodsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initSpinner()
         init()
         activity?.registerReceiver(receiver, IntentFilter("com.example.MYALARM"))
-
         drawGraph()
     }
 
@@ -64,7 +68,7 @@ class GoodsFragment : Fragment() {
         binding = null
     }
 
-    fun init(){
+    fun init() {
         dbHelper = GoodsDBHelper(requireActivity())
         dbHelper.goodsClickListener = object : GoodsDBHelper.onGoodsClickListener {
             override fun onGoodsClick(_gid: Int, _gname: String, _gcount: Int) {
@@ -74,30 +78,30 @@ class GoodsFragment : Fragment() {
 
                 val goodslistBuilder = AlertDialog.Builder(requireActivity())
                 goodslistBuilder.setView(goodslistBinding.root)
-                    .setPositiveButton("수정") { _, _ ->
-                        var gname = goodslistBinding.gnameEdit.text.toString()
-                        var gcount = goodslistBinding.gcountEdit.text.toString().toInt()
-                        dbHelper.updateGoods(_gid, gname, gcount)
-                        dbHelper.getAllRecord(binding!!, petId)
-                        drawGraph()
-                        Toast.makeText(requireActivity(), "물품 수정 완료", Toast.LENGTH_SHORT).show()
+                        .setPositiveButton("수정") { _, _ ->
+                            var gname = goodslistBinding.gnameEdit.text.toString()
+                            var gcount = goodslistBinding.gcountEdit.text.toString().toInt()
+                            dbHelper.updateGoods(_gid, gname, gcount)
+                            dbHelper.getAllRecord(binding!!, petId)
+                            drawGraph()
+                            Toast.makeText(requireActivity(), "물품 수정 완료", Toast.LENGTH_SHORT).show()
 
-                    }
-                    .setNeutralButton("취소") { _, _ ->
-                        Toast.makeText(requireActivity(), "취소", Toast.LENGTH_SHORT).show()
-                    }
-                    .setNegativeButton("삭제") { _, _ ->
-                        dbHelper.deleteGoods(_gid)
-                        dbHelper.getAllRecord(binding!!, petId)
-
-                        if((dbHelper.getGoodsNum(petId)) == 0){
-                            deleteAlarm()
                         }
+                        .setNeutralButton("취소") { _, _ ->
+                            Toast.makeText(requireActivity(), "취소", Toast.LENGTH_SHORT).show()
+                        }
+                        .setNegativeButton("삭제") { _, _ ->
+                            dbHelper.deleteGoods(_gid)
+                            dbHelper.getAllRecord(binding!!, petId)
 
-                        drawGraph()
-                        Toast.makeText(requireActivity(), "물품 삭제 완료", Toast.LENGTH_SHORT).show()
-                    }
-                    .show()
+                            if ((dbHelper.getGoodsNum(petId)) == 0) {
+                                deleteAlarm()
+                            }
+
+                            drawGraph()
+                            Toast.makeText(requireActivity(), "물품 삭제 완료", Toast.LENGTH_SHORT).show()
+                        }
+                        .show()
             }
         }
 
@@ -107,31 +111,30 @@ class GoodsFragment : Fragment() {
             val goodslistBinding = GoodslistBinding.inflate(layoutInflater)
             val goodslistBuilder = AlertDialog.Builder(requireActivity())
             goodslistBuilder.setView(goodslistBinding.root)
-                .setPositiveButton("추가") { _, _ ->
-                    var gname = goodslistBinding.gnameEdit.text.toString()
-                    var gcount = 0
-                    try {
-                        gcount = goodslistBinding.gcountEdit.text.toString().toInt()
-                    }
-                    catch (e : NumberFormatException){
-                        Toast.makeText(requireActivity(), "물품 수량이 숫자 형식이 아닙니다. 수정해주세요.", Toast.LENGTH_SHORT).show()
-                    }
-                    dbHelper.insertGoods(gname, gcount, petId)
-                    dbHelper.getAllRecord(binding!!, petId)
+                    .setPositiveButton("추가") { _, _ ->
+                        var gname = goodslistBinding.gnameEdit.text.toString()
+                        var gcount = 0
+                        try {
+                            gcount = goodslistBinding.gcountEdit.text.toString().toInt()
+                        } catch (e: NumberFormatException) {
+                            Toast.makeText(requireActivity(), "물품 수량이 숫자 형식이 아닙니다. 수정해주세요.", Toast.LENGTH_SHORT).show()
+                        }
+                        dbHelper.insertGoods(gname, gcount, petId)
+                        dbHelper.getAllRecord(binding!!, petId)
 
-                    val _count = dbHelper.getGoodsNum(petId)
-                    if( _count == 1){
-                        setAlarm()
+                        val _count = dbHelper.getGoodsNum(petId)
+                        if (_count == 1) {
+                            setAlarm()
+                        }
+
+                        drawGraph()
+                        Toast.makeText(requireActivity(), "물품 추가 완료. 매일 자정에 자동으로 물품 수량을 관리합니다.", Toast.LENGTH_SHORT).show()
+
                     }
-
-                    drawGraph()
-                    Toast.makeText(requireActivity(), "물품 추가 완료. 매일 자정에 자동으로 물품 수량을 관리합니다.", Toast.LENGTH_SHORT).show()
-
-                }
-                .setNegativeButton("취소") { _, _ ->
-                    Toast.makeText(requireActivity(), "취소", Toast.LENGTH_SHORT).show()
-                }
-                .show()
+                    .setNegativeButton("취소") { _, _ ->
+                        Toast.makeText(requireActivity(), "취소", Toast.LENGTH_SHORT).show()
+                    }
+                    .show()
         }
 
     }
@@ -152,17 +155,17 @@ class GoodsFragment : Fragment() {
         //알람시간 설정
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.SECOND, 20)
         calendar.set(Calendar.MILLISECOND, 0)
 
         //Receiver 설정
         myintent = Intent(requireActivity(), GoodsAlarmReceiver::class.java)
         //myintent.putExtra("number", binding)
         pendingIntent = PendingIntent.getBroadcast(
-            requireActivity(),
-            10,
-            myintent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+                requireActivity(),
+                10,
+                myintent,
+                PendingIntent.FLAG_UPDATE_CURRENT
         )
 
 
@@ -174,7 +177,7 @@ class GoodsFragment : Fragment() {
     }
 
     fun deleteAlarm() {
-        if(pendingIntent != null){
+        if (pendingIntent != null) {
             Toast.makeText(requireActivity(), "관리할 물품이 없습니다. 자동 물품 수량 관리를 종료합니다.", Toast.LENGTH_SHORT).show()
 
             alarmManager.cancel(pendingIntent)
@@ -182,13 +185,13 @@ class GoodsFragment : Fragment() {
         }
     }
 
-    var receiver = object : BroadcastReceiver(){
+    var receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val mode = intent!!.getStringExtra("mode")
-            if(mode != null){
-                when(mode){
-                    "update"->{
-                        dbHelper.dailyUpdateGoods(petId,binding!!)
+            if (mode != null) {
+                when (mode) {
+                    "update" -> {
+                        dbHelper.dailyUpdateGoods(petId, binding!!)
                         dbHelper.getAllRecord(binding!!, petId)
                         drawGraph()
                     }
@@ -200,17 +203,17 @@ class GoodsFragment : Fragment() {
     val labelList = ArrayList<String>()
     val valList = ArrayList<Int>()
 
-    fun drawGraph(){
+    fun drawGraph() {
         labelList.clear()
         valList.clear()
         dbHelper.getGraphContents(petId, labelList, valList)
 
         val entries = ArrayList<BarEntry>()
-        for(i in 0 until valList.size){
+        for (i in 0 until valList.size) {
             entries.add(BarEntry(i.toFloat(), valList.get(i).toFloat()))
         }
 
-        val barDataSet : BarDataSet = BarDataSet(entries, "물품수량 현황")
+        val barDataSet: BarDataSet = BarDataSet(entries, "물품수량 현황")
         barDataSet.color = ColorTemplate.rgb("#ff7b22")
         barDataSet.valueTextSize = 12f
 
@@ -219,12 +222,11 @@ class GoodsFragment : Fragment() {
 
 
         binding!!.barChart.apply {
-            xAxis.valueFormatter = object : ValueFormatter(){
+            xAxis.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
-                    if(valList.size > value.toInt()){
+                    if (valList.size > value.toInt()) {
                         return labelList[value.toInt()]
-                    }
-                    else{
+                    } else {
                         return "기타"
                     }
 
@@ -234,14 +236,14 @@ class GoodsFragment : Fragment() {
             data = barData
 
             //Chart가 그려질때 애니메이션
-            animateXY(0,800)
+            animateXY(0, 800)
 
             //터치, Pinch 상호작용
             setScaleEnabled(false)
             setPinchZoom(false)
 
             //Chart 밑에 description 표시 유무
-            description=null
+            description = null
 
             //Legend는 차트의 범례를 의미합니다
             //범례가 표시될 위치를 설정
@@ -270,9 +272,55 @@ class GoodsFragment : Fragment() {
             invalidate()
         }
 
-
-
-
     }
+
+    fun initSpinner() {
+        petDBHelper = PetInfoDBHelper(requireActivity())
+
+        //안드로이드에서 기본적으로 제공하는 레이아웃(두번째 인자)에 string배열 값을(세번째 인자)를 매핑하는 어뎁터 생성
+        val adapter = ArrayAdapter<String>(
+                requireActivity(),
+                //android.R.layout.simple_spinner_dropdown_item,
+                R.layout.spinner_item,
+                java.util.ArrayList<String>()
+        )
+
+        val petList: java.util.ArrayList<PetIdName> = petDBHelper.getAllPetIDName()
+        for (i in 0 until petList.size) {
+            adapter.add(petList[i].name)
+            Log.i("pet name" , petList[i].name)
+        }
+
+
+
+        binding!!.apply {
+            goodsSpinner.adapter = adapter
+
+            if(!goodsSpinner.adapter.isEmpty) {
+                goodsSpinner.setSelection(0)
+            }
+
+            goodsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+                override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                ) {
+                    petId = petList[position].id
+                    dbHelper.getAllRecord(binding!!, petId)
+                    drawGraph()
+                }
+
+            }
+
+
+        }
+    }
+
 
 }
