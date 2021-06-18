@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import android.view.Gravity
 import android.widget.CheckBox
 import android.widget.TableRow
@@ -115,7 +114,6 @@ class DBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, DB_VER
         _binding!!.checkTableLayout.removeAllViewsInLayout()
 
         val dateId: Int = getDid(_year, _month, _day, _petId)
-        Log.i("dataId_ver3", dateId.toString())
         if (dateId == -1)
             return
 
@@ -130,7 +128,7 @@ class DBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, DB_VER
         strsql = "select * from $CHECK_TABLE_NAME where $DID = '$dateId';"
         cursor = db.rawQuery(strsql, null)
         if (cursor.count != 0) {
-            Log.i("cursor count", "checklist 0이 아니었다!!")
+
             showCheckRecord(cursor, _binding)
         }
 
@@ -280,7 +278,7 @@ class DBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, DB_VER
         if (dateId == -1) {
             insertDateTable(year, month, day, _petId)
             dateId = getDid(year, month, day, _petId)
-            Log.i("dateId_ver2", dateId.toString())
+
         }
         val values: ContentValues = ContentValues()
         values.put(CCONTENT, ccontent)
@@ -288,7 +286,7 @@ class DBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, DB_VER
         values.put(DID, dateId)
         val db = writableDatabase
         val flag = db.insert(CHECK_TABLE_NAME, null, values) > 0
-        Log.i("flag", flag.toString())
+
         db.close()
         return flag
     }
@@ -340,5 +338,36 @@ class DBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, DB_VER
         db.insert(DATE_TABLE_NAME, null, values)
         db.close()
     }
+
+    fun getCheckNum(_year: Int, _month: Int, _day: Int, _petId: Int) : List<Int> {
+        val result : ArrayList<Int> = ArrayList<Int>()
+
+        val dateId: Int = getDid(_year, _month, _day, _petId)
+        if (dateId == -1){
+            result.add(-1)
+            result.add(-1)
+            return result
+        }
+
+
+        val db = readableDatabase
+        var strsql = "select * from $CHECK_TABLE_NAME where $DID = '$dateId';"
+        var cursor = db.rawQuery(strsql, null)
+        if (cursor.count != 0) {
+            cursor.close()
+            db.close()
+            result.add(cursor.count)
+            result.add(dateId)
+            return result
+        }
+        else{
+            cursor.close()
+            db.close()
+            result.add(-1)
+            result.add(dateId)
+            return result
+        }
+    }
+
 
 }
