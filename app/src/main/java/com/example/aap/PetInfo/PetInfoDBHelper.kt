@@ -20,7 +20,7 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
 
     companion object{
         val DB_NAME = "petinfo.db"
-        val DB_VERSION = 5
+        val DB_VERSION = 6
 
         val TABLE_NAME1 = "petbasic"
         val PID = "pid"                     //펫 ID
@@ -39,6 +39,12 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         val TABLE_NAME3 = "petino"
         val IID = "iid"
         val INOCULATION = "inoculation"   //접종이력
+
+        val TABLE_NAME4 = "petalbum"
+        val AID = "aid"
+        val DATE = "date"
+
+
     }
 
     override fun onCreate(db: SQLiteDatabase?)
@@ -66,6 +72,14 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
                 "$INOCULATION text, " +
                 "FOREIGN KEY($PID) REFERENCES $TABLE_NAME1($PID) );"
         db!!.execSQL(create_table3)
+
+        val create_table4 = "create table if not exists $TABLE_NAME4("+
+                "$AID integer primary key autoincrement, " +
+                "$PID integer, " +
+                "$DATE text, " +
+                "$PIMAGE text, " +
+                "FOREIGN KEY($PID) REFERENCES $TABLE_NAME1($PID) );"
+        db!!.execSQL(create_table4)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int)
@@ -78,6 +92,9 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
 
         val drop_table3 = "drop table if exists $TABLE_NAME3;"
         db!!.execSQL(drop_table3)
+
+        val drop_table4 = "drop table if exists $TABLE_NAME4;"
+        db!!.execSQL(drop_table4)
 
         onCreate(db)
     }
@@ -247,6 +264,28 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         return inolist
     }
 
+    fun getPetAlbum(pid:Int): ArrayList<AlbumData> {
+        val strsql = "select * from $TABLE_NAME4 order by $DATE;"
+        val db = readableDatabase
+
+        val cursor = db.rawQuery(strsql, null)
+        cursor.moveToFirst()
+
+        var Albumlist = ArrayList<AlbumData>()
+
+        if (cursor.count != 0) {
+            do {
+                if(cursor.getInt(1) == pid)
+                    Albumlist.add(AlbumData(cursor.getString(2), cursor.getString(3)))
+
+            }while (cursor.moveToNext())
+        }
+
+        cursor.close()
+
+        return Albumlist
+    }
+
     fun getAllRecord(name: String, _binding: ContentScrollingBinding) {
         _binding!!.disTableLayout2.removeAllViewsInLayout()
         _binding!!.inoTableLayout2.removeAllViewsInLayout()
@@ -281,7 +320,7 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
 
 
         val rowParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
-        val viewParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 100, 1f)
+        val viewParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 100)
 
         if(cursor.count==0) {
             Log.d("showdis", "fail")
@@ -295,7 +334,7 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
                 //클릭하면 삭제가능하게끔
             }
             val textView = TextView(context)
-            textView.layoutParams = viewParam
+            textView.layoutParams = rowParam
             textView.text = cursor.getString(2)
             textView.textSize = 10.0f
             textView.gravity = Gravity.CENTER
@@ -342,6 +381,18 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         return flag
     }
 
+    fun insertPetAlbum(path: String, date: String, pid:Int):Boolean
+    {
+        val values = ContentValues()
+        values.put(PID, pid)
+        values.put(PIMAGE, path)
+        values.put(DATE, date)
+        val db = writableDatabase
+        val flag = db.insert(TABLE_NAME4, null, values) > 0
+
+        return flag
+    }
+
     fun removePetInfo(name: String)
     {
         val pid = getPID(name)
@@ -368,6 +419,12 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         val db = writableDatabase
         db.delete(TABLE_NAME3, "$IID=?", arrayOf(iid.toString()))
 
+    }
+
+    fun removePetAlbum(pid: Int)
+    {
+        val db = writableDatabase
+        db.delete(TABLE_NAME4, "$PID=?", arrayOf(pid.toString()))
     }
 
     fun updatePetInfo(item: PetInfo)

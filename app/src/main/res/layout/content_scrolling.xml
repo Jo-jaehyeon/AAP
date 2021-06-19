@@ -272,11 +272,20 @@
 
             <Button
                 android:id="@+id/Rewritebtn"
-                android:layout_width="wrap_content"
+                android:layout_width ="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="160dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="40dp"
                 android:text="수정하기" />
+
+            <Button
+                android:id="@+id/AlbumBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="40dp"
+                android:text="앨범보기" />
 
         </LinearLayout>
 

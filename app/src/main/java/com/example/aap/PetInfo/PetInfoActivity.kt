@@ -137,8 +137,6 @@ class PetInfoActivity : AppCompatActivity() {
 
     }
 
-
-
     fun initBtn()
     {
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener{
@@ -239,6 +237,11 @@ class PetInfoActivity : AppCompatActivity() {
 
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+        }
+        findViewById<Button>(R.id.AlbumBtn).setOnClickListener {
+            val intent = Intent(this, PetAlbumActivity::class.java)
+            intent.putExtra("name", petname)
             startActivity(intent)
         }
     }
