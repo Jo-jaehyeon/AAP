@@ -6,9 +6,10 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/galleryContetnImage"
+        android:id="@+id/galleryContentImage"
         android:layout_width="match_parent"
         android:layout_height="600dp"
+        android:visibility="visible"
         app:srcCompat="@drawable/ic_baseline_photo_library_24" />
 
     <LinearLayout
@@ -17,8 +18,7 @@
         android:layout_marginTop="420dp"
         android:background="#40FFCDAF"
         android:orientation="vertical"
-        android:padding="15dp"
-       >
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/galleryNum"

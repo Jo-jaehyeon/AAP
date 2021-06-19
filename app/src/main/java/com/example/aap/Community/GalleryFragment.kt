@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri.decode
+import android.os.BaseBundle
 
 import android.os.Bundle
 
@@ -50,13 +51,10 @@ class GalleryFragment: Fragment() {
         wTitle = i?.getStringExtra("string").toString();
         wBoardNum = i?.getLongExtra("int", 0).toString().toInt();
         wContent = i?.getStringExtra("content").toString()
-        wimage = i?.getStringExtra(wimage).toString()
-        gimage = StringToBitmap(wimage)
-        var gallery1 = galleryRdb.child("gallery" + 2)
-        gallery1.child("galleryNum").setValue(wBoardNum)
-        gallery1.child("galleryTitle").setValue(wTitle)
-        gallery1.child("galleryContent").setValue(wContent)
-        gallery1.child("galleryImage").setValue(gimage)
+        wimage = i?.getStringExtra("image").toString()
+        val imageBytes = android.util.Base64.decode(wimage, 0)
+        val image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+
         init()
         return binding.root
     }
@@ -64,8 +62,8 @@ class GalleryFragment: Fragment() {
     private fun init() {
         val ct = requireContext()
         layoutManager = LinearLayoutManager(ct, LinearLayoutManager.VERTICAL, false)
-        galleryRdb = FirebaseDatabase.getInstance().getReference("Boards/contents")
-        val query = galleryRdb.limitToLast(50)
+        galleryRdb = FirebaseDatabase.getInstance().getReference("Galleries/contents")
+        val query = galleryRdb.orderByChild("timestamp")
         val option = FirebaseRecyclerOptions.Builder<Gallery>()
             .setQuery(query, Gallery::class.java)
             .build()
@@ -94,12 +92,6 @@ class GalleryFragment: Fragment() {
             galleryRecyclerView.layoutManager = layoutManager
             galleryRecyclerView.adapter = adapter
             writeBtn.setOnClickListener {
-                //게시글 작성 액티비티 이동
-//                var board1 = boardRdb.child("board2")
-//                board1.child("boardNum").setValue(1)
-//                board1.child("boardTitle").setValue("78907890")
-//                board1.child("boardContent").setValue("12341234")
-//                board1.child("boardUid").setValue("shs")
                 val intent = Intent(it.context, GalleryWriteActivity::class.java)
                 startActivity(intent)
             }

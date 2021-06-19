@@ -1,21 +1,21 @@
 package com.example.aap.Community
-
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aap.databinding.BoardRowBinding
+import com.bumptech.glide.Glide
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
+import com.example.aap.R
 import com.example.aap.databinding.GalleryRowBinding
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import java.util.*
+import com.google.firebase.storage.FirebaseStorage
 
-class GalleryAdapter (options: FirebaseRecyclerOptions<Gallery>)
+
+class GalleryAdapter(options: FirebaseRecyclerOptions<Gallery>)
     : FirebaseRecyclerAdapter<Gallery, GalleryAdapter.ViewHolder>(options)
 {
-
     interface OnitemClickListener{
         fun OnItemClick(view: View, position: Int)
     }
@@ -28,32 +28,33 @@ class GalleryAdapter (options: FirebaseRecyclerOptions<Gallery>)
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view =GalleryRowBinding.inflate(LayoutInflater.from(parent.context), parent,false)
+        val view =GalleryRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, model: Gallery) {
-        holder.binding.apply{
+        val context = holder.itemView.context
+        holder.binding.apply {
+//            var ref =FirebaseStorage.getInstance().getReference("images").child("IMAGE_"+
+//                    model.galleryNum.toString()+".jpg")
+
+//            val ref = FirebaseStorage.getInstance().getReference().child("images/IMAGE_"+model.galleryNum+".jpg")
+            val ref = FirebaseStorage.getInstance()
+                .getReferenceFromUrl("gs://allaboutpet-1c6f3.appspot.com/images/IMAGE_1.jpg")
+            val uri = model.galleryImage
+            Glide.with(context)
+                .asGif()
+                .load(ref)
+                .centerCrop()
+                .placeholder(R.drawable.ic_baseline_photo_library_24)
+                .override(300, 600)
+                .fitCenter()
+                .into(galleryContentImage)
             galleryNum.text = model.galleryNum.toString()
-            galleryTitle.text = model.galleryTitle.toString()
-            var bitmap = StringToBitmap(model.galleryImage)
-            galleryContetnImage.setImageBitmap(bitmap)
+            galleryTitle.text = model.galleryTitle
+
         }
+
     }
-
-    override fun getItemCount(): Int {
-        return super.getItemCount()
-    }
-    fun StringToBitmap(encodedString: String?): Bitmap? {
-        return try {
-
-            val encodeByte: ByteArray = Base64.getDecoder().decode(encodedString) // String 화 된 이미지를  base64방식으로 인코딩하여 byte배열을 만듬
-            BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size) //만들어진 bitmap을 return
-        } catch (e: Exception) {
-            e.message
-            null
-        }
-    }
-
-
 }
+

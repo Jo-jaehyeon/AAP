@@ -3,7 +3,10 @@ package com.example.aap.Community
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import androidx.core.view.size
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aap.MainActivity
@@ -12,15 +15,19 @@ import com.example.aap.databinding.ActivityBoardWriteBinding
 import com.example.aap.databinding.ActivityMainBinding
 import com.example.aap.databinding.FragmentBoardBinding
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import kotlinx.coroutines.delay
+import org.jetbrains.anko.support.v4.viewPager
 
 class BoardWriteActivity : AppCompatActivity() {
     lateinit var binding : ActivityBoardWriteBinding
     lateinit var binding2 : FragmentBoardBinding
+    lateinit var binding3 : MainActivity
     lateinit var layoutManager: LinearLayoutManager
     lateinit var adapter: BoardAdapter
     lateinit var boardRdb: DatabaseReference
+    lateinit var boardRdbCount: DatabaseReference
+    var str = ""
     var findQuery = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,58 +35,58 @@ class BoardWriteActivity : AppCompatActivity() {
         binding = ActivityBoardWriteBinding.inflate(layoutInflater)
         binding2  = FragmentBoardBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        boardRdbCount = FirebaseDatabase.getInstance().getReference("BoardsCount").child("count")
+        boardRdbCount.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var data = snapshot.value.toString()
+                str = data
+                Log.i("BOARDCOUNT",data)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
         init()
     }
-    //.setMovementMethod(new ScrollingMovementMethod()); 스크롤 추가
-
     private fun init(){
         layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
         boardRdb = FirebaseDatabase.getInstance().getReference("Boards/contents")
         val query = boardRdb.orderByKey()
-        val query2 = boardRdb.limitToLast(1)
-        //val boardnum = boardRdb.orderByChild("boardNum").limitToLast(1)
-        //val query = rdb.orderByKey()
         val option = FirebaseRecyclerOptions.Builder<Board>()
             .setQuery(query, Board::class.java)
             .build()
-//        val postListener = object : ValueEventListener {
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                // Get Post object and use the values to update the UI
-//                val post = dataSnapshot.getValue()
-//                // ...
-//            }
-//
-//            override fun onCancelled(databaseError: DatabaseError) {
-//                // Getting Post failed, log a message
-//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-//            }
-//        }
-//        boardRdb.addValueEventListener(postListener)
         adapter = BoardAdapter(option)
-
         binding.apply {
+
             writeEnroll.setOnClickListener {
-                binding2.recyclerView.layoutManager = layoutManager
-                binding2.recyclerView.adapter = adapter
-                val num = 10
-                //var boardcount = boardRdb.limitToLast(1).limitToFirst(2).get()
-                val content = Board(num,titleEdit.text.toString(),
-                    contentEdit.text.toString(),"noinfo")
-                boardRdb.child("board" +num).setValue(content)
-                initAdapter()
-                val intent = Intent(it.context,MainActivity::class.java)
-                intent.putExtra("int", num)
-                intent.putExtra("string", titleEdit.text.toString())
-                intent.putExtra("content", contentEdit.text.toString())
-                startActivity(intent)
+                Handler().postDelayed({
+                    binding2.recyclerView.layoutManager = layoutManager
+                    binding2.recyclerView.adapter = adapter
+                    var count2 = str.toInt()+1
+                    val timestamp = System.currentTimeMillis()
+                    val content = Board(count2,titleEdit.text.toString(),
+                            contentEdit.text.toString(),"noinfo",timestamp)
+                    boardRdb.child("board" +count2).setValue(content)
+                    str = count2.toString()
+                    boardRdbCount.setValue(count2)
+                    initAdapter()
+                    val intent = Intent(it.context,MainActivity::class.java)
+                    intent.putExtra("int", count2)
+                    intent.putExtra("string", titleEdit.text.toString())
+                    intent.putExtra("content", contentEdit.text.toString())
+                    intent.putExtra("timestamp",timestamp)
+                    intent.putExtra("flag","1000")
+                    startActivity(intent)
+                },1000.toLong())
+
             }
             writeBack.setOnClickListener {
                 val intent = Intent(it.context, MainActivity::class.java)
+                intent.putExtra("flag","1000")
                 startActivity(intent)
             }
         }
     }
-
     fun initAdapter() {
         if (findQuery) {
             findQuery = false

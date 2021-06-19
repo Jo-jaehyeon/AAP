@@ -1,7 +1,9 @@
 package com.example.aap.Community
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.aap.MainActivity
 import com.example.aap.R
 import com.example.aap.databinding.ActivityBoardViewerBinding
 
@@ -25,6 +27,11 @@ class BoardViewerActivity : AppCompatActivity() {
         binding.apply {
             textTitle.setText(bTitle)
             textContent.setText(bContent)
+            viewBack.setOnClickListener {
+                val intent = Intent(it.context, MainActivity::class.java)
+                intent.putExtra("flag","1000")
+                startActivity(intent)
+            }
         }
     }
 }

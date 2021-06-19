@@ -1,5 +1,6 @@
 package com.example.aap.Community
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,12 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.aap.MainActivity
 import com.example.aap.R
 import com.example.aap.databinding.ActivityMainBinding
 import com.example.aap.databinding.FragmentBoardBinding
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import org.jetbrains.anko.startActivityForResult
 
 class BoardFragment: Fragment() {
     lateinit var binding: FragmentBoardBinding
@@ -23,6 +26,7 @@ class BoardFragment: Fragment() {
     var wBoardNum =0
     var wContent =""
     var findQuery = false
+    var timestamp = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +38,7 @@ class BoardFragment: Fragment() {
         wTitle = i?.getStringExtra("string").toString();
         wBoardNum = i?.getLongExtra("int",0).toString().toInt();
         wContent = i?.getStringExtra("content").toString()
-        var board1 = boardRdb.child("board" + 2)
+        var board1 = boardRdb.child("board" + wBoardNum)
         board1.child("boardNum").setValue(wBoardNum)
         board1.child("boardTitle").setValue(wTitle)
         board1.child("boardContent").setValue(wContent)
@@ -44,6 +48,8 @@ class BoardFragment: Fragment() {
     private fun init(){
         val ct = requireContext()
         layoutManager = LinearLayoutManager(ct,LinearLayoutManager.VERTICAL,false)
+        layoutManager.reverseLayout
+        layoutManager.stackFromEnd
         boardRdb = FirebaseDatabase.getInstance().getReference("Boards/contents")
         val query = boardRdb.limitToLast(50)
         val option = FirebaseRecyclerOptions.Builder<Board>()
@@ -58,9 +64,10 @@ class BoardFragment: Fragment() {
                     //initAdapter()
                     val ct = requireContext()
                     val i= Intent(ct,BoardViewerActivity::class.java)
-                    i.putExtra("int", wBoardNum)
-                    i.putExtra("string", wTitle)
-                    i.putExtra("content", wContent)
+                    i.putExtra("int", adapter.getItem(position).boardNum)
+                    i.putExtra("string", adapter.getItem(position).boardTitle)
+                    i.putExtra("content", adapter.getItem(position).boardContent)
+                    i.putExtra("timestamp",adapter.getItem(position).timestamp)
                     startActivity(i)
                 }
             }
@@ -74,12 +81,7 @@ class BoardFragment: Fragment() {
             recyclerView.layoutManager = layoutManager
             recyclerView.adapter = adapter
             writeBtn.setOnClickListener {
-                //게시글 작성 액티비티 이동
-//                var board1 = boardRdb.child("board2")
-//                board1.child("boardNum").setValue(1)
-//                board1.child("boardTitle").setValue("78907890")
-//                board1.child("boardContent").setValue("12341234")
-//                board1.child("boardUid").setValue("shs")
+
                 val intent = Intent(it.context,BoardWriteActivity::class.java)
                 startActivity(intent)
             }
@@ -90,7 +92,7 @@ class BoardFragment: Fragment() {
             findQuery = false
             if (adapter != null)
                 adapter.startListening()
-            val query = boardRdb.limitToLast(50)
+            val query = boardRdb.orderByChild("timestamp")
             //val query = rdb.orderByKey()
             val option = FirebaseRecyclerOptions.Builder<Board>()
                 .setQuery(query, Board::class.java)
@@ -123,6 +125,8 @@ class BoardFragment: Fragment() {
         super.onStop()
         adapter.stopListening()
     }
+
+
 
 
 }
