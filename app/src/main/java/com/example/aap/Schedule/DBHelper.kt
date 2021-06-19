@@ -124,14 +124,12 @@ class DBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, DB_VER
             showWalkRecord(cursor, _binding)
         }
 
-
         strsql = "select * from $CHECK_TABLE_NAME where $DID = '$dateId';"
         cursor = db.rawQuery(strsql, null)
         if (cursor.count != 0) {
 
             showCheckRecord(cursor, _binding)
         }
-
 
         cursor.close()
         db.close()

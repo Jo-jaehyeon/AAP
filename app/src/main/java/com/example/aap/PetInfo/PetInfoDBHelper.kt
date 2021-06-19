@@ -5,6 +5,16 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+import android.view.Gravity
+import android.widget.CheckBox
+import android.widget.TableRow
+import android.widget.TextView
+import com.example.aap.Schedule.DBHelper
+import com.example.aap.databinding.ContentScrollingBinding
+import com.example.aap.databinding.FragmentPetInfoBinding
+import com.example.aap.databinding.FragmentScheduleBinding
+import org.jetbrains.anko.matchParent
 
 class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
@@ -47,14 +57,14 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
                 "$DID integer primary key autoincrement, " +
                 "$PID integer, " +
                 "$DISEASE text, " +
-                "FOREIGN KEY($DID) REFERENCES $TABLE_NAME1($PID) );"
+                "FOREIGN KEY($PID) REFERENCES $TABLE_NAME1($PID) );"
         db!!.execSQL(create_table2)
 
         val create_table3 = "create table if not exists $TABLE_NAME3("+
                 "$IID integer primary key autoincrement, " +
                 "$PID integer, " +
                 "$INOCULATION text, " +
-                "FOREIGN KEY($IID) REFERENCES $TABLE_NAME1($PID) );"
+                "FOREIGN KEY($PID) REFERENCES $TABLE_NAME1($PID) );"
         db!!.execSQL(create_table3)
     }
 
@@ -235,6 +245,64 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         cursor.close()
 
         return inolist
+    }
+
+    fun getAllRecord(name: String, _binding: ContentScrollingBinding) {
+        _binding!!.disTableLayout2.removeAllViewsInLayout()
+        _binding!!.inoTableLayout2.removeAllViewsInLayout()
+
+        val pid: Int = getPID(name)
+        if (pid == -1)
+            return
+
+        var strsql1 = "select * from $TABLE_NAME2 where $PID = '$pid';"
+        val db = readableDatabase
+        var cursor = db.rawQuery(strsql1, null)
+        if (cursor.count != 0) {
+            Log.d("dis", "show")
+            showDisRecord(cursor, _binding)
+        }
+
+
+        var strsql2 = "select * from $TABLE_NAME3 where $PID = '$pid';"
+        cursor = db.rawQuery(strsql2, null)
+        if (cursor.count != 0) {
+            //showInoRecord(cursor, _binding)
+        }
+
+        cursor.close()
+        db.close()
+    }
+
+
+    fun showDisRecord(cursor: Cursor, _binding: ContentScrollingBinding) {
+
+        cursor.moveToFirst()
+
+
+        val rowParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
+        val viewParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 100, 1f)
+
+        if(cursor.count==0) {
+            Log.d("showdis", "fail")
+            return
+        }
+
+        do {
+            val row = TableRow(context)
+            row.layoutParams = rowParam
+            row.setOnClickListener {
+                //클릭하면 삭제가능하게끔
+            }
+            val textView = TextView(context)
+            textView.layoutParams = viewParam
+            textView.text = cursor.getString(2)
+            textView.textSize = 10.0f
+            textView.gravity = Gravity.CENTER
+            row.addView(textView)
+
+            _binding.disTableLayout2.addView(row)
+        }while(cursor.moveToNext())
     }
 
     fun insertPetBasic(product: PetInfo):Boolean

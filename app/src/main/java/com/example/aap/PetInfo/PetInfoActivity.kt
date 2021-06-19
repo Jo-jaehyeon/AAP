@@ -3,12 +3,14 @@ package com.example.aap.PetInfo
 
 import android.app.Activity
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
@@ -17,6 +19,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.aap.MainActivity
 import com.example.aap.R
+import com.example.aap.databinding.ContentScrollingBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
 import java.io.FileOutputStream
@@ -30,11 +33,12 @@ class PetInfoActivity : AppCompatActivity() {
     lateinit var petname: String
     lateinit var mydb: PetInfoDBHelper
     private val OPEN_GALLERY = 1
+    lateinit var binding: ContentScrollingBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         petname = intent.getStringExtra("name").toString()
-
+        binding = ContentScrollingBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_pet_info)
         setSupportActionBar(findViewById(R.id.toolbar))
         findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout).title = petname
@@ -98,6 +102,7 @@ class PetInfoActivity : AppCompatActivity() {
     fun initData()
     {
         mydb = PetInfoDBHelper(this)
+        mydb.getAllRecord(petname, binding)
         val pid = mydb.getPID(petname)
         val pet = mydb.getPetInfo(pid)
 
@@ -167,6 +172,56 @@ class PetInfoActivity : AppCompatActivity() {
                 findViewById<ImageButton>(R.id.NonNeutralbtn2).setImageResource(R.drawable.nonneutral_selected)
             }
         }
+        findViewById<Button>(R.id.Plusbtn1).setOnClickListener{
+            val inputtext = EditText(this)
+
+            val dlgBuilder = AlertDialog.Builder(this)
+            dlgBuilder.setTitle("질병이력")
+                .setView(inputtext)
+                .setPositiveButton("추가"){
+                        _, _ ->
+                    if(inputtext.text.isNotEmpty())
+                    {
+                        Toast.makeText(this, inputtext.text.toString(), Toast.LENGTH_SHORT).show()
+                        val flag = mydb.insertPetDisease(inputtext.text.toString(), mydb.getPID(petname))
+                        if(flag)
+                            mydb.getAllRecord(petname, binding)
+                        else
+                            Log.d("insert", "fail")
+                    }
+                    else
+                        Toast.makeText(this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("취소"){
+                        _, _ ->
+                }
+                .show()
+        }
+        findViewById<Button>(R.id.Plusbtn2).setOnClickListener{
+            val inputtext = EditText(this)
+
+            val dlgBuilder = AlertDialog.Builder(this)
+            dlgBuilder.setTitle("접종이력")
+                .setView(inputtext)
+                .setPositiveButton("추가"){
+                        _, _ ->
+                    if(inputtext.text.isNotEmpty())
+                    {
+                        Toast.makeText(this, inputtext.text.toString(), Toast.LENGTH_SHORT).show()
+                        val flag = mydb.insertPetInoculation(inputtext.text.toString(), mydb.getPID(petname))
+                        if(flag)
+                            mydb.getAllRecord(petname, binding)
+                        else
+                            Log.d("insert", "fail")
+                    }
+                    else
+                        Toast.makeText(this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("취소"){
+                        _, _ ->
+                }
+                .show()
+        }
         findViewById<Button>(R.id.Rewritebtn).setOnClickListener {
             saveImage()         //이미지 저장
 
@@ -174,8 +229,7 @@ class PetInfoActivity : AppCompatActivity() {
             val newname = findViewById<EditText>(R.id.PetName2).text.toString()
             val newage = Integer.parseInt(findViewById<EditText>(R.id.PetAge2).text.toString())
             val newbirth = findViewById<EditText>(R.id.BirthdayView2).text.toString()
-            val temp =
-                PetInfoDBHelper.PetInfo(newname, ImagePath, newage, gender, isNeutral, newbirth)
+            val temp = PetInfoDBHelper.PetInfo(newname, ImagePath, newage, gender, isNeutral, newbirth)
 
             mydb.updatePetInfo(temp)
 
@@ -257,5 +311,7 @@ class PetInfoActivity : AppCompatActivity() {
         fos.close()
 
     }
+
+
 
 }

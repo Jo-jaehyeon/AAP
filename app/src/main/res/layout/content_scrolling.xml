@@ -207,13 +207,17 @@
         </LinearLayout>
 
         <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="2dp">
 
-            <LinearLayout
+            <TableLayout
+                android:id="@+id/disTableLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_height="wrap_content">
+
+            </TableLayout>
         </ScrollView>
 
         <LinearLayout
@@ -247,13 +251,17 @@
         </LinearLayout>
 
         <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="2dp">
 
-            <LinearLayout
+            <TableLayout
+                android:id="@+id/inoTableLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_height="wrap_content">
+
+            </TableLayout>
         </ScrollView>
 
         <LinearLayout

@@ -214,10 +214,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp">
 
-                <LinearLayout
+                <TableLayout
+                    android:id="@+id/disTableLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:layout_height="wrap_content">
+
+                </TableLayout>
             </ScrollView>
 
             <LinearLayout
@@ -254,10 +256,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp">
 
-                <LinearLayout
+                <TableLayout
+                    android:id="@+id/inoTableLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:layout_height="wrap_content">
+
+                </TableLayout>
             </ScrollView>
 
             <LinearLayout

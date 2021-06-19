@@ -9,9 +9,11 @@ import androidx.appcompat.app.AlertDialog
 import com.example.aap.MainActivity
 import com.example.aap.R
 import com.example.aap.databinding.ActivityPetPlusBinding
+import com.example.aap.databinding.ContentScrollingBinding
 
 class PetPlusActivity : AppCompatActivity() {
     lateinit var binding: ActivityPetPlusBinding
+    lateinit var binding2: ContentScrollingBinding
     lateinit var mydb: PetInfoDBHelper
     var disList = mutableListOf<String>()
     var inoList = mutableListOf<String>()
@@ -22,6 +24,7 @@ class PetPlusActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPetPlusBinding.inflate(layoutInflater)
+        binding2 = ContentScrollingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
         initBtn()
@@ -81,6 +84,7 @@ class PetPlusActivity : AppCompatActivity() {
                     .setPositiveButton("추가"){
                             _, _ ->
                         disList.add(inputtext.text.toString())
+
                     }
                     .setNegativeButton("취소"){
                             _, _ ->
