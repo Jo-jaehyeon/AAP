@@ -84,6 +84,27 @@ class PetInfoActivity : AppCompatActivity() {
                         //펫 정보 삭제
                         mydb.removePetInfo(petname)
 
+                        //펫 앨범 삭제
+                        mydb.removePetAlbum(pid)
+                        var folder = "$cacheDir/Pet/Image/$petname/"
+                        var file = File(folder)
+                        var childFileList = file.listFiles()
+
+                        for (childFile in childFileList) {
+                            if (childFile.isDirectory) {
+                                deleteFile(childFile.absolutePath)
+                            } else {
+                                childFile.delete()
+                            }
+                        }
+                        file.delete()
+
+                        //펫 사진 삭제
+                        var imgPath = "$cacheDir/Pet/Image/$petname.jpg"
+                        var img = File(imgPath)
+                        if(img.exists())
+                            deleteFile(imgPath)
+
                         //메인 화면으로
                         val intent = Intent(this, MainActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -93,7 +114,6 @@ class PetInfoActivity : AppCompatActivity() {
                             _, _ ->
                     }
                     .show()
-
             }
         }
         return true
@@ -174,7 +194,7 @@ class PetInfoActivity : AppCompatActivity() {
             val inputtext = EditText(this)
 
             val dlgBuilder = AlertDialog.Builder(this)
-            dlgBuilder.setTitle("질병이력")
+            dlgBuilder.setTitle("보유질병")
                 .setView(inputtext)
                 .setPositiveButton("추가"){
                         _, _ ->

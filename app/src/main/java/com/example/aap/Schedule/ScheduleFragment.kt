@@ -205,8 +205,17 @@ class ScheduleFragment : Fragment() {
 
             try
             {
+                var petname = ""
+                petDBHelper = PetInfoDBHelper(requireActivity())
+                for(i in petDBHelper.getAllPetIDName())
+                    if(petId == i.id) {
+                        petname = i.name
+                        break
+                    }
                 val bitmap:Bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, currentImage)
-                var StoragePath = context?.cacheDir.toString() + "/Pet/Image/$petId"
+
+
+                var StoragePath = context?.cacheDir.toString() + "/Pet/Image/$petname"
 
                 var Folder = File(StoragePath)
                 if(!Folder.exists())        //폴더 없으면 생성
