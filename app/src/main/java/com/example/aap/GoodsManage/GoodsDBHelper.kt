@@ -9,8 +9,9 @@ import android.view.Gravity
 import android.widget.TableRow
 import android.widget.TextView
 import com.example.aap.databinding.FragmentGoodsBinding
+import java.util.ArrayList
 
-class GoodsDBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, DB_VERSION)  {
+class GoodsDBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, DB_VERSION) {
 
     companion object {
         val DB_NAME = "goods_db.db"
@@ -25,10 +26,10 @@ class GoodsDBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, D
 
     }
 
-    var goodsClickListener : onGoodsClickListener? = null
+    var goodsClickListener: onGoodsClickListener? = null
 
     interface onGoodsClickListener {
-        fun onGoodsClick(_gid : Int, _gname : String, _gcount: Int)
+        fun onGoodsClick(_gid: Int, _gname: String, _gcount: Int)
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -46,7 +47,7 @@ class GoodsDBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, D
         onCreate(db)
     }
 
-    fun deleteGoods(_gid: Int){
+    fun deleteGoods(_gid: Int) {
         val db = writableDatabase
         db.delete(GOODS_TABLE_NAME, "$GID=?", arrayOf(_gid.toString()))
         db.close()
@@ -64,7 +65,7 @@ class GoodsDBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, D
         db.close()
     }
 
-    fun insertGoods(_gname: String, _gcount: Int, _petId : Int): Boolean {
+    fun insertGoods(_gname: String, _gcount: Int, _petId: Int): Boolean {
         val db = writableDatabase
 
         val values: ContentValues = ContentValues()
@@ -96,12 +97,12 @@ class GoodsDBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, D
 
         // 레코드 추가하기 - 데이터베이스의 레코드를 읽어서 추가시켜주기
         val rowParam = TableRow.LayoutParams(
-                TableRow.LayoutParams.MATCH_PARENT,
-                TableRow.LayoutParams.WRAP_CONTENT
+            TableRow.LayoutParams.MATCH_PARENT,
+            TableRow.LayoutParams.WRAP_CONTENT
         )
         val viewParam0 = TableRow.LayoutParams(0, 100, 2f)
-        val viewParam1 = TableRow.LayoutParams(0, 100, 5f)
-        val viewParam2 = TableRow.LayoutParams(0, 100, 10f)
+        val viewParam1 = TableRow.LayoutParams(0, 100, 7f)
+        val viewParam2 = TableRow.LayoutParams(0, 100, 7f)
 
         var index = 1
 
@@ -151,6 +152,67 @@ class GoodsDBHelper(val cont: Context) : SQLiteOpenHelper(cont, DB_NAME, null, D
         } while (cursor.moveToNext()) //val recordCount = cursor.count
     }
 
+    fun getGoodsNum(_petId: Int): Int {
+        var strsql = "select * from $GOODS_TABLE_NAME where $PETID = '$_petId';"
+        val db = readableDatabase
+        var cursor = db.rawQuery(strsql, null)
 
+        val number = cursor.count
+
+        cursor.close()
+        db.close()
+
+        return number
+    }
+
+    fun dailyUpdateGoods(_petId: Int, _binding: FragmentGoodsBinding) {
+
+        _binding!!.goodsTableLayout.removeAllViewsInLayout()
+
+        val db = writableDatabase
+        var strsql = "select * from $GOODS_TABLE_NAME where $PETID = '$_petId';"
+        var cursor = db.rawQuery(strsql, null)
+        cursor.moveToFirst()
+
+        do {
+            val _gid: Int = cursor.getString(0).toInt()
+            var _gcount: Int = cursor.getString(2).toInt()
+
+            val values: ContentValues = ContentValues()
+            if(_gcount > 0){
+                _gcount--
+            }
+            values.put(GCOUNT, _gcount)
+
+            db.update(GOODS_TABLE_NAME, values, "$GID=?", arrayOf(_gid.toString()))
+
+        } while (cursor.moveToNext()) //val recordCount = cursor.count
+
+        cursor.moveToFirst()
+        if (cursor.count != 0) {
+
+            showGoodsRecord(cursor, _binding)
+        }
+
+        cursor.close()
+        db.close()
+    }
+
+    fun getGraphContents(_petId: Int, _labelList : ArrayList<String>, _valList : ArrayList<Int>){
+        var strsql = "select * from $GOODS_TABLE_NAME where $PETID = '$_petId';"
+        val db = readableDatabase
+        var cursor = db.rawQuery(strsql, null)
+        if (cursor.count != 0) {
+            cursor.moveToFirst()
+            do {
+                val _gname: String = cursor.getString(1)
+                val _gcount: Int = cursor.getString(2).toInt()
+                _labelList.add(_gname)
+                _valList.add(_gcount)
+            } while (cursor.moveToNext()) //val recordCount = cursor.count
+        }
+        cursor.close()
+        db.close()
+    }
 
 }

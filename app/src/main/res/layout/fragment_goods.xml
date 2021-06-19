@@ -6,57 +6,67 @@
     tools:context=".GoodsManage.GoodsFragment">
 
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+      >
+
+        <Spinner
+            android:id="@+id/goodsSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textAlignment="center"
+            android:backgroundTint="@color/purple_200"
+            android:spinnerMode="dropdown"
+            android:layout_gravity="center"
+            android:gravity="center"/>
 
 
         <LinearLayout
+            android:paddingTop="20dp"
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:layout_margin="2dp">
+            android:layout_margin="2dp"
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="2"
                 android:layout_height="wrap_content"
-                android:ems="2"
                 android:gravity="center"
                 android:text="No."
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="7"
                 android:layout_height="wrap_content"
-                android:ems="5"
                 android:gravity="center"
                 android:text="용품"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:layout_width="140dp"
+                android:layout_width="0dp"
+                android:layout_weight="7"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:gravity="center"
                 android:text="사용가능 일수"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textStyle="bold"
-                android:textSize="20sp"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
 
         <ScrollView
             android:layout_width="330dp"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="2dp">
+            android:layout_margin="2dp"
+            >
 
             <TableLayout
                 android:id="@+id/goodsTableLayout"
@@ -77,9 +87,10 @@
             android:text="PLUS" />
 
         <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/pie"
-            android:layout_width="300dp"
-            android:layout_height="300dp" />
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:paddingBottom="50dp"/>
 
 
     </LinearLayout>
