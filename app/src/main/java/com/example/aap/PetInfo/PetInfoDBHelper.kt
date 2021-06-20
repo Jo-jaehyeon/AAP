@@ -22,7 +22,7 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
 
     companion object{
         val DB_NAME = "petinfo.db"
-        val DB_VERSION = 1
+        val DB_VERSION = 5
 
         val TABLE_NAME1 = "petbasic"
         val PID = "pid"                     //펫 ID

@@ -6,7 +6,5 @@
     android:text="반려동물 이름"
     android:textStyle="bold"
     android:textSize = "18sp"
-    android:textColor="@color/purple_700"
-
-    >
+    android:textColor="#FF6D1B">
 </TextView>

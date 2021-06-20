@@ -27,6 +27,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:tabMode="auto"
-        android:background="#fff"/>
+        android:background="#fff"
+        app:tabSelectedTextColor="#FF7D05"
+        app:tabTextColor="#000"/>
 
 </LinearLayout>

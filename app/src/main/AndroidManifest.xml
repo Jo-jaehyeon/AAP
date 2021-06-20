@@ -36,6 +36,7 @@
             android:enabled="true"
             android:exported="true" />
 
+
         <activity android:name=".Community.GalleryViewerActivity" />
         <activity
             android:name=".Community.GalleryWriteActivity"
@@ -70,7 +71,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".MainActivity"/>
     </application>
 
 </manifest>

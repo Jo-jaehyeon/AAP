@@ -10,31 +10,37 @@ class LoadingActivity : AppCompatActivity() {
     //private val SPLASH_TIME_OUT: Long = 3000
     lateinit var binding : ActivityLoadingBinding
 
+    lateinit var handler: Handler
+    lateinit var runnable: Runnable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoadingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        handler = Handler()
+        runnable= Runnable {
+            val intent = Intent(this, SignInActivity::class.java)
+            startActivity(intent)
+        }
+
+        /*이 프로젝트에서는 실행이 안됨.*/
+        binding.skipbtn.setOnClickListener {
+            handler.removeCallbacks(runnable)
+        }
         init()
     }
 
+
     private fun init(){
-        val handler = Handler()
         handler.postDelayed({
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, SignIOActivity::class.java)
             startActivity(intent)
             finish()
         },5000)
 
-        /*이 프로젝트에서는 실행이 안됨. 차후 수정 예정*/
-        binding.skipbtn.setOnClickListener {
-            handler.removeCallbacks {
-                val intent = Intent(this, SignInActivity::class.java)
-                startActivity(intent)
-            }
-        }
-
-
     }
+
+
 
 }
