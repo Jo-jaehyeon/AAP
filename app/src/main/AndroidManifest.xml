@@ -43,13 +43,20 @@
             android:theme="@style/Theme.AAP.NoActionBar" />
         <activity android:name=".Community.BoardViewerActivity" />
         <activity android:name=".Community.BoardWriteActivity" />
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".PetInfo.PetPlusActivity" />
         <activity
             android:name=".PetInfo.PetInfoActivity"
             android:theme="@style/Theme.AAP.NoActionBar" />
-        <activity android:name=".PetInfo.PetPlusActivity" />
-        <activity android:name=".SignInActivity" />
-        <activity android:name=".SignIOActivity" />
+
+        <activity
+            android:name=".SignUpActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name=".SignInActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name=".SignIOActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
             android:name=".LoadingActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
@@ -59,6 +66,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".MainActivity" />
     </application>
 

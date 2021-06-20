@@ -74,6 +74,7 @@ class SignInActivity : AppCompatActivity() {
                         flag = -1
                         //Toast.makeText(this, "로그인 됨", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
                     }
                     0 -> {
