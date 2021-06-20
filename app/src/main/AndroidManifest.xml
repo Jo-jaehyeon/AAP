@@ -42,7 +42,10 @@
             android:label="@string/title_activity_gallery_write"
             android:theme="@style/Theme.AAP.NoActionBar" />
         <activity android:name=".Community.BoardViewerActivity" />
-        <activity android:name=".Community.BoardWriteActivity" />
+        <activity
+            android:name=".Community.BoardWriteActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
         <activity android:name=".PetInfo.PetPlusActivity" />
         <activity
             android:name=".PetInfo.PetInfoActivity"

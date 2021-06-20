@@ -36,9 +36,11 @@
 
             <LinearLayout
                 android:layout_width="300dp"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:orientation="horizontal"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp">
 
                 <TextView
                     android:id="@+id/textView5"
@@ -51,9 +53,12 @@
                 <Button
                     android:id="@+id/imgBtn"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:text="+" />
+                    android:gravity="center"
+                    android:text="+"
+                    android:textSize="17sp"
+                    android:backgroundTint="#FFC2BA"/>
             </LinearLayout>
 
             <LinearLayout
@@ -69,7 +74,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="5"
-                    android:text="산책 (날짜를 선택해주세요)" />
+                    android:text="산책 (날짜를 선택해주세요)"
+                    android:gravity="center"/>
 
                 <Button
                     android:id="@+id/addWalk"
@@ -77,7 +83,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="2"
-                    android:backgroundTint="#BECEDC"
+                    android:backgroundTint="#FF9090"
                     android:text="PLUS" />
 
             </LinearLayout>
@@ -86,14 +92,15 @@
                 android:layout_width="300dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
-
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ems="2"
+                    android:ems="6"
                     android:gravity="center"
+                    android:layout_marginRight="10dp"
                     android:text="No." />
 
                 <TextView
@@ -101,6 +108,7 @@
                     android:layout_height="wrap_content"
                     android:ems="5"
                     android:gravity="center"
+                    android:layout_marginRight="5dp"
                     android:text="산책시간" />
 
                 <TextView
@@ -108,6 +116,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:gravity="center"
+                    android:layout_marginLeft="5dp"
                     android:text="특이사항" />
             </LinearLayout>
 
@@ -140,7 +149,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="5"
-                    android:text="체크리스트 (날짜를 선택해주세요)" />
+                    android:text="체크리스트 (날짜를 선택해주세요)"
+                    android:gravity="center"/>
 
                 <Button
                     android:id="@+id/addCheck"
@@ -148,7 +158,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="2"
-                    android:backgroundTint="#BECEDC"
+                    android:backgroundTint="#FF9090"
                     android:text="PLUS" />
 
             </LinearLayout>

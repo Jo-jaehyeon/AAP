@@ -10,8 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-      >
+        android:orientation="vertical">
 
         <Spinner
             android:id="@+id/goodsSpinner"
@@ -34,7 +33,7 @@
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="2"
+                android:layout_weight="5"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="No."
@@ -83,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:backgroundTint="#BECEDC"
+            android:backgroundTint="#FF9090"
             android:text="PLUS" />
 
         <com.github.mikephil.charting.charts.BarChart

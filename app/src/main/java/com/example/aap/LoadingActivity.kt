@@ -21,10 +21,10 @@ class LoadingActivity : AppCompatActivity() {
     private fun init(){
         val handler = Handler()
         handler.postDelayed({
-            val intent = Intent(this, SignIOActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        },3000)
+        },5000)
 
         /*이 프로젝트에서는 실행이 안됨. 차후 수정 예정*/
         binding.skipbtn.setOnClickListener {
