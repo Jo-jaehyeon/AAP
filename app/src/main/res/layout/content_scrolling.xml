@@ -215,7 +215,7 @@
             <TableLayout
                 android:id="@+id/disTableLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="150dp">
 
             </TableLayout>
         </ScrollView>
@@ -259,7 +259,7 @@
             <TableLayout
                 android:id="@+id/inoTableLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="150dp">
 
             </TableLayout>
         </ScrollView>

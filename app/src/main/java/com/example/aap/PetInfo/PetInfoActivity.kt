@@ -66,54 +66,54 @@ class PetInfoActivity : AppCompatActivity() {
             {
                 val dlgBuilder = AlertDialog.Builder(this)
                 dlgBuilder.setTitle(petname)
-                    .setMessage(petname + "을(를) 삭제하시겠습니까?")
-                    .setPositiveButton("삭제"){
+                        .setMessage(petname + "을(를) 삭제하시겠습니까?")
+                        .setPositiveButton("삭제"){
                             _, _ ->
-                        val pid = mydb.getPID(petname)
+                            val pid = mydb.getPID(petname)
 
-                        //보유 질병 삭제
-                        val dislist = mydb.getPetDis(pid)
-                        for(i in dislist)
-                            mydb.removePetDis(petname, i)
+                            //보유 질병 삭제
+                            val dislist = mydb.getPetDis(pid)
+                            for(i in dislist)
+                                mydb.removePetDis(petname, i)
 
-                        //접종 이력 삭제
-                        val inolist = mydb.getPetIno(pid)
-                        for(i in inolist)
-                            mydb.removePetIno(petname, i)
+                            //접종 이력 삭제
+                            val inolist = mydb.getPetIno(pid)
+                            for(i in inolist)
+                                mydb.removePetIno(petname, i)
 
-                        //펫 정보 삭제
-                        mydb.removePetInfo(petname)
+                            //펫 정보 삭제
+                            mydb.removePetInfo(petname)
 
-                        //펫 앨범 삭제
-                        mydb.removePetAlbum(pid)
-                        var folder = "$cacheDir/Pet/Image/$petname/"
-                        var file = File(folder)
-                        var childFileList = file.listFiles()
+                            //펫 앨범 삭제
+                            mydb.removePetAlbum(pid)
+                            var folder = "$cacheDir/Pet/Image/$petname/"
+                            var file = File(folder)
+                            var childFileList = file.listFiles()
 
-                        for (childFile in childFileList) {
-                            if (childFile.isDirectory) {
-                                deleteFile(childFile.absolutePath)
-                            } else {
-                                childFile.delete()
+                            for (childFile in childFileList) {
+                                if (childFile.isDirectory) {
+                                    deleteFile(childFile.absolutePath)
+                                } else {
+                                    childFile.delete()
+                                }
                             }
+                            file.delete()
+
+                            //펫 사진 삭제
+                            var imgPath = "$cacheDir/Pet/Image/$petname.jpg"
+                            var img = File(imgPath)
+                            if(img.exists())
+                                deleteFile(imgPath)
+
+                            //메인 화면으로
+                            val intent = Intent(this, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            startActivity(intent)
                         }
-                        file.delete()
-
-                        //펫 사진 삭제
-                        var imgPath = "$cacheDir/Pet/Image/$petname.jpg"
-                        var img = File(imgPath)
-                        if(img.exists())
-                            deleteFile(imgPath)
-
-                        //메인 화면으로
-                        val intent = Intent(this, MainActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        startActivity(intent)
-                    }
-                    .setNegativeButton("취소"){
+                        .setNegativeButton("취소"){
                             _, _ ->
-                    }
-                    .show()
+                        }
+                        .show()
             }
         }
         return true
@@ -122,7 +122,9 @@ class PetInfoActivity : AppCompatActivity() {
     fun initData()
     {
         mydb = PetInfoDBHelper(this)
-        mydb.getAllRecord(petname, binding)
+        //mydb.getAllRecord(petname, binding)
+        mydb.getAllRecord2(petname, findViewById(R.id.disTableLayout2), findViewById(R.id.inoTableLayout2))
+
         val pid = mydb.getPID(petname)
         val pet = mydb.getPetInfo(pid)
 
@@ -195,50 +197,52 @@ class PetInfoActivity : AppCompatActivity() {
 
             val dlgBuilder = AlertDialog.Builder(this)
             dlgBuilder.setTitle("보유질병")
-                .setView(inputtext)
-                .setPositiveButton("추가"){
+                    .setView(inputtext)
+                    .setPositiveButton("추가"){
                         _, _ ->
-                    if(inputtext.text.isNotEmpty())
-                    {
-                        Toast.makeText(this, inputtext.text.toString(), Toast.LENGTH_SHORT).show()
-                        val flag = mydb.insertPetDisease(inputtext.text.toString(), mydb.getPID(petname))
-                        if(flag)
-                            mydb.getAllRecord(petname, binding)
+                        if(inputtext.text.isNotEmpty())
+                        {
+                            Toast.makeText(this, inputtext.text.toString(), Toast.LENGTH_SHORT).show()
+                            val flag = mydb.insertPetDisease(inputtext.text.toString(), mydb.getPID(petname))
+                            if(flag) {
+                                Log.i("getAllRecord", "함수시작 전")
+                                mydb.getAllRecord(petname, binding)
+                            }
+                            else
+                                Log.d("insert", "fail")
+                        }
                         else
-                            Log.d("insert", "fail")
+                            Toast.makeText(this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show()
                     }
-                    else
-                        Toast.makeText(this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show()
-                }
-                .setNegativeButton("취소"){
+                    .setNegativeButton("취소"){
                         _, _ ->
-                }
-                .show()
+                    }
+                    .show()
         }
         findViewById<Button>(R.id.Plusbtn2).setOnClickListener{
             val inputtext = EditText(this)
 
             val dlgBuilder = AlertDialog.Builder(this)
             dlgBuilder.setTitle("접종이력")
-                .setView(inputtext)
-                .setPositiveButton("추가"){
+                    .setView(inputtext)
+                    .setPositiveButton("추가"){
                         _, _ ->
-                    if(inputtext.text.isNotEmpty())
-                    {
-                        Toast.makeText(this, inputtext.text.toString(), Toast.LENGTH_SHORT).show()
-                        val flag = mydb.insertPetInoculation(inputtext.text.toString(), mydb.getPID(petname))
-                        if(flag)
-                            mydb.getAllRecord(petname, binding)
+                        if(inputtext.text.isNotEmpty())
+                        {
+                            Toast.makeText(this, inputtext.text.toString(), Toast.LENGTH_SHORT).show()
+                            val flag = mydb.insertPetInoculation(inputtext.text.toString(), mydb.getPID(petname))
+                            if(flag)
+                                mydb.getAllRecord(petname, binding)
+                            else
+                                Log.d("insert", "fail")
+                        }
                         else
-                            Log.d("insert", "fail")
+                            Toast.makeText(this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show()
                     }
-                    else
-                        Toast.makeText(this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show()
-                }
-                .setNegativeButton("취소"){
+                    .setNegativeButton("취소"){
                         _, _ ->
-                }
-                .show()
+                    }
+                    .show()
         }
         findViewById<Button>(R.id.Rewritebtn).setOnClickListener {
             saveImage()         //이미지 저장

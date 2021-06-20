@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import android.view.Gravity
 import android.widget.CheckBox
+import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import com.example.aap.Schedule.DBHelper
@@ -287,21 +288,25 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
     }
 
     fun getAllRecord(name: String, _binding: ContentScrollingBinding) {
+        Log.i("getAllRecord", "함수 시작")
         _binding!!.disTableLayout2.removeAllViewsInLayout()
         _binding!!.inoTableLayout2.removeAllViewsInLayout()
 
         val pid: Int = getPID(name)
-        if (pid == -1)
+        if (pid == -1){
+            Log.i("getAllRecord", "pid 가 없음")
             return
+        }
+
 
         var strsql1 = "select * from $TABLE_NAME2 where $PID = '$pid';"
         val db = readableDatabase
         var cursor = db.rawQuery(strsql1, null)
         if (cursor.count != 0) {
             Log.d("dis", "show")
+            Log.i("dis", "show")
             showDisRecord(cursor, _binding)
         }
-
 
         var strsql2 = "select * from $TABLE_NAME3 where $PID = '$pid';"
         cursor = db.rawQuery(strsql2, null)
@@ -328,6 +333,9 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         }
 
         do {
+
+            Log.d("dis", "그리는중")
+            Log.i("dis", "그리는중")
             val row = TableRow(context)
             row.layoutParams = rowParam
             row.setOnClickListener {
@@ -339,6 +347,7 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
             textView.textSize = 10.0f
             textView.gravity = Gravity.CENTER
             row.addView(textView)
+
 
             _binding.disTableLayout2.addView(row)
         }while(cursor.moveToNext())
@@ -463,6 +472,100 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         cursor.close()
 
         return petlist
+    }
+
+    fun getAllRecord2(name: String, table1: TableLayout, table2: TableLayout) {
+
+        table1.removeAllViewsInLayout()
+        table2.removeAllViewsInLayout()
+
+        val pid: Int = getPID(name)
+        if (pid == -1){
+
+            return
+        }
+
+
+        var strsql1 = "select * from $TABLE_NAME2 where $PID = '$pid';"
+        val db = readableDatabase
+        var cursor = db.rawQuery(strsql1, null)
+        if (cursor.count != 0) {
+
+            showDisRecord2(cursor, table1)
+        }
+
+        var strsql2 = "select * from $TABLE_NAME3 where $PID = '$pid';"
+        cursor = db.rawQuery(strsql2, null)
+        if (cursor.count != 0) {
+
+            showInoRecord2(cursor, table2)
+        }
+
+        cursor.close()
+        db.close()
+    }
+
+
+    fun showDisRecord2(cursor: Cursor, table : TableLayout) {
+
+        cursor.moveToFirst()
+
+
+        val rowParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
+        val viewParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 100)
+
+        if(cursor.count==0) {
+
+            return
+        }
+
+        do {
+
+            val row = TableRow(context)
+            row.layoutParams = rowParam
+            row.setOnClickListener {
+                //클릭하면 삭제가능하게끔
+            }
+            val textView = TextView(context)
+            textView.layoutParams = viewParam
+            textView.text = cursor.getString(2)
+            textView.textSize = 18.0f
+            textView.gravity = Gravity.CENTER
+            row.addView(textView)
+
+
+            table.addView(row)
+        }while(cursor.moveToNext())
+    }
+
+    fun showInoRecord2(cursor: Cursor, table : TableLayout) {
+
+        cursor.moveToFirst()
+
+
+        val rowParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
+        val viewParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 100)
+
+        if(cursor.count==0) {
+            return
+        }
+
+        do {
+            val row = TableRow(context)
+            row.layoutParams = rowParam
+            row.setOnClickListener {
+                //클릭하면 삭제가능하게끔
+            }
+            val textView = TextView(context)
+            textView.layoutParams = viewParam
+            textView.text = cursor.getString(2)
+            textView.textSize = 18.0f
+            textView.gravity = Gravity.CENTER
+            row.addView(textView)
+
+
+            table.addView(row)
+        }while(cursor.moveToNext())
     }
 
 }
