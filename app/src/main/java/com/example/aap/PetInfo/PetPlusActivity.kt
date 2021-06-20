@@ -1,9 +1,14 @@
 package com.example.aap.PetInfo
 
 import android.content.Intent
+import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import android.widget.EditText
+import android.widget.TableRow
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.aap.MainActivity
@@ -13,7 +18,7 @@ import com.example.aap.databinding.ContentScrollingBinding
 
 class PetPlusActivity : AppCompatActivity() {
     lateinit var binding: ActivityPetPlusBinding
-    lateinit var binding2: ContentScrollingBinding
+
     lateinit var mydb: PetInfoDBHelper
     var disList = mutableListOf<String>()
     var inoList = mutableListOf<String>()
@@ -24,7 +29,7 @@ class PetPlusActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPetPlusBinding.inflate(layoutInflater)
-        binding2 = ContentScrollingBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
         init()
         initBtn()
@@ -84,7 +89,7 @@ class PetPlusActivity : AppCompatActivity() {
                     .setPositiveButton("추가"){
                             _, _ ->
                         disList.add(inputtext.text.toString())
-
+                        showDisRecord(binding)
                     }
                     .setNegativeButton("취소"){
                             _, _ ->
@@ -100,6 +105,7 @@ class PetPlusActivity : AppCompatActivity() {
                     .setPositiveButton("추가"){
                             _, _ ->
                         inoList.add(inputtext.text.toString())
+                        showInoRecord(binding)
                     }
                     .setNegativeButton("취소"){
                             _, _ ->
@@ -130,6 +136,95 @@ class PetPlusActivity : AppCompatActivity() {
                 }
             }
 
+        }
+
+    }
+
+    fun showDisRecord(_binding: ActivityPetPlusBinding) {
+        _binding!!.disTableLayout.removeAllViewsInLayout()
+
+        val rowParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
+        val viewParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 100)
+
+        if(disList.isEmpty()) {
+            Log.d("dislist", "empty")
+            return
+        }
+
+        for(i in disList)
+        {
+            val row = TableRow(this)
+            row.layoutParams = rowParam
+            row.setOnClickListener {
+                //클릭하면 삭제가능하게끔
+                val textView = row.getChildAt(0) as TextView
+                val text = textView.text.toString()
+
+                val dlgBuilder = AlertDialog.Builder(this@PetPlusActivity)
+                dlgBuilder.setTitle("보유질병 삭제")
+                    .setMessage(text + "을(를) 삭제하시겠습니까?")
+                    .setPositiveButton("삭제"){
+                            _, _ ->
+                        disList.remove(text)
+                        showDisRecord(_binding)
+                    }
+                    .setNegativeButton("취소"){
+                            _, _ ->
+                    }
+                    .show()
+            }
+            val textView = TextView(this)
+            textView.layoutParams = viewParam
+            textView.text = i
+            textView.textSize = 18.0f
+            textView.gravity = Gravity.CENTER
+            row.addView(textView)
+
+            _binding.disTableLayout.addView(row)
+        }
+
+    }
+
+    fun showInoRecord(_binding: ActivityPetPlusBinding) {
+        _binding!!.inoTableLayout.removeAllViewsInLayout()
+
+        val rowParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
+        val viewParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 100)
+
+        if(inoList.isEmpty()) {
+            Log.d("inolist", "empty")
+            return
+        }
+
+        for(i in inoList)
+        {
+            val row = TableRow(this)
+            row.layoutParams = rowParam
+            row.setOnClickListener {
+                //클릭하면 삭제가능하게끔
+                val textView = row.getChildAt(0) as TextView
+                val text = textView.text.toString()
+                val dlgBuilder = AlertDialog.Builder(this@PetPlusActivity)
+                dlgBuilder.setTitle("접종이력 삭제")
+                    .setMessage(text + "을(를)삭제하시겠습니까?")
+                    .setPositiveButton("삭제"){
+                            _, _ ->
+                        inoList.remove(text)
+                        showInoRecord(_binding)
+                    }
+                    .setNegativeButton("취소"){
+                            _, _ ->
+                    }
+                    .show()
+            }
+            val textView = TextView(this)
+            textView.layoutParams = viewParam
+            textView.text = i
+            textView.textSize = 18.0f
+            textView.gravity = Gravity.CENTER
+            row.addView(textView)
+
+            _binding.inoTableLayout.addView(row)
         }
 
     }

@@ -11,6 +11,7 @@ import android.widget.CheckBox
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import com.example.aap.Schedule.DBHelper
 import com.example.aap.databinding.ContentScrollingBinding
 import com.example.aap.databinding.FragmentPetInfoBinding
@@ -21,7 +22,7 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
 
     companion object{
         val DB_NAME = "petinfo.db"
-        val DB_VERSION = 5
+        val DB_VERSION = 1
 
         val TABLE_NAME1 = "petbasic"
         val PID = "pid"                     //펫 ID
@@ -287,72 +288,6 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         return Albumlist
     }
 
-    fun getAllRecord(name: String, _binding: ContentScrollingBinding) {
-        Log.i("getAllRecord", "함수 시작")
-        _binding!!.disTableLayout2.removeAllViewsInLayout()
-        _binding!!.inoTableLayout2.removeAllViewsInLayout()
-
-        val pid: Int = getPID(name)
-        if (pid == -1){
-            Log.i("getAllRecord", "pid 가 없음")
-            return
-        }
-
-
-        var strsql1 = "select * from $TABLE_NAME2 where $PID = '$pid';"
-        val db = readableDatabase
-        var cursor = db.rawQuery(strsql1, null)
-        if (cursor.count != 0) {
-            Log.d("dis", "show")
-            Log.i("dis", "show")
-            showDisRecord(cursor, _binding)
-        }
-
-        var strsql2 = "select * from $TABLE_NAME3 where $PID = '$pid';"
-        cursor = db.rawQuery(strsql2, null)
-        if (cursor.count != 0) {
-            //showInoRecord(cursor, _binding)
-        }
-
-        cursor.close()
-        db.close()
-    }
-
-
-    fun showDisRecord(cursor: Cursor, _binding: ContentScrollingBinding) {
-
-        cursor.moveToFirst()
-
-
-        val rowParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
-        val viewParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 100)
-
-        if(cursor.count==0) {
-            Log.d("showdis", "fail")
-            return
-        }
-
-        do {
-
-            Log.d("dis", "그리는중")
-            Log.i("dis", "그리는중")
-            val row = TableRow(context)
-            row.layoutParams = rowParam
-            row.setOnClickListener {
-                //클릭하면 삭제가능하게끔
-            }
-            val textView = TextView(context)
-            textView.layoutParams = rowParam
-            textView.text = cursor.getString(2)
-            textView.textSize = 10.0f
-            textView.gravity = Gravity.CENTER
-            row.addView(textView)
-
-
-            _binding.disTableLayout2.addView(row)
-        }while(cursor.moveToNext())
-    }
-
     fun insertPetBasic(product: PetInfo):Boolean
     {
         val values = ContentValues()
@@ -474,7 +409,7 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         return petlist
     }
 
-    fun getAllRecord2(name: String, table1: TableLayout, table2: TableLayout) {
+    fun getAllRecord(name: String, table1: TableLayout, table2: TableLayout) {
 
         table1.removeAllViewsInLayout()
         table2.removeAllViewsInLayout()
@@ -491,14 +426,14 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         var cursor = db.rawQuery(strsql1, null)
         if (cursor.count != 0) {
 
-            showDisRecord2(cursor, table1)
+            showDisRecord(name, cursor, table1, table2)
         }
 
         var strsql2 = "select * from $TABLE_NAME3 where $PID = '$pid';"
         cursor = db.rawQuery(strsql2, null)
         if (cursor.count != 0) {
 
-            showInoRecord2(cursor, table2)
+            showInoRecord(name, cursor, table2, table2)
         }
 
         cursor.close()
@@ -506,10 +441,10 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
     }
 
 
-    fun showDisRecord2(cursor: Cursor, table : TableLayout) {
+    fun showDisRecord(name: String, cursor: Cursor, distable: TableLayout, inotable: TableLayout) {
 
+        distable.removeAllViewsInLayout()
         cursor.moveToFirst()
-
 
         val rowParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
         val viewParam = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 100)
@@ -520,12 +455,26 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
         }
 
         do {
-
             val row = TableRow(context)
             row.layoutParams = rowParam
             row.setOnClickListener {
                 //클릭하면 삭제가능하게끔
+                val disView = row.getChildAt(0) as TextView
+                val dis = disView.text.toString()
+                val dlgBuilder = AlertDialog.Builder(context)
+                dlgBuilder.setTitle("보유질병 삭제")
+                    .setMessage(dis + "을(를)삭제하시겠습니까?")
+                    .setPositiveButton("삭제"){
+                            _, _ ->
+                        removePetDis(name, dis)
+                        getAllRecord(name, distable, inotable)
+                    }
+                    .setNegativeButton("취소"){
+                            _, _ ->
+                    }
+                    .show()
             }
+
             val textView = TextView(context)
             textView.layoutParams = viewParam
             textView.text = cursor.getString(2)
@@ -534,12 +483,13 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
             row.addView(textView)
 
 
-            table.addView(row)
+            distable.addView(row)
         }while(cursor.moveToNext())
     }
 
-    fun showInoRecord2(cursor: Cursor, table : TableLayout) {
+    fun showInoRecord(name: String, cursor: Cursor, distable: TableLayout, inotable: TableLayout) {
 
+        inotable.removeAllViewsInLayout()
         cursor.moveToFirst()
 
 
@@ -555,7 +505,22 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
             row.layoutParams = rowParam
             row.setOnClickListener {
                 //클릭하면 삭제가능하게끔
+                val inoView = row.getChildAt(0) as TextView
+                val ino = inoView.text.toString()
+                val dlgBuilder = AlertDialog.Builder(context)
+                dlgBuilder.setTitle("접종이력 삭제")
+                    .setMessage(ino + "을(를)삭제하시겠습니까?")
+                    .setPositiveButton("삭제"){
+                            _, _ ->
+                        removePetIno(name, ino)
+                        getAllRecord(name, distable, inotable)
+                    }
+                    .setNegativeButton("취소"){
+                            _, _ ->
+                    }
+                    .show()
             }
+
             val textView = TextView(context)
             textView.layoutParams = viewParam
             textView.text = cursor.getString(2)
@@ -564,7 +529,7 @@ class PetInfoDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME,
             row.addView(textView)
 
 
-            table.addView(row)
+            inotable.addView(row)
         }while(cursor.moveToNext())
     }
 

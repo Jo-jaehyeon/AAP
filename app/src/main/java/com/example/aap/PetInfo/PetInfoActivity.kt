@@ -122,8 +122,7 @@ class PetInfoActivity : AppCompatActivity() {
     fun initData()
     {
         mydb = PetInfoDBHelper(this)
-        //mydb.getAllRecord(petname, binding)
-        mydb.getAllRecord2(petname, findViewById(R.id.disTableLayout2), findViewById(R.id.inoTableLayout2))
+        mydb.getAllRecord(petname, findViewById(R.id.disTableLayout2), findViewById(R.id.inoTableLayout2))
 
         val pid = mydb.getPID(petname)
         val pet = mydb.getPetInfo(pid)
@@ -202,11 +201,11 @@ class PetInfoActivity : AppCompatActivity() {
                         _, _ ->
                         if(inputtext.text.isNotEmpty())
                         {
-                            Toast.makeText(this, inputtext.text.toString(), Toast.LENGTH_SHORT).show()
                             val flag = mydb.insertPetDisease(inputtext.text.toString(), mydb.getPID(petname))
                             if(flag) {
                                 Log.i("getAllRecord", "함수시작 전")
-                                mydb.getAllRecord(petname, binding)
+                                mydb.getAllRecord(petname, findViewById(R.id.disTableLayout2), findViewById(R.id.inoTableLayout2))
+                                Toast.makeText(this, "보유질병을 추가했습니다.", Toast.LENGTH_SHORT).show()
                             }
                             else
                                 Log.d("insert", "fail")
@@ -232,7 +231,10 @@ class PetInfoActivity : AppCompatActivity() {
                             Toast.makeText(this, inputtext.text.toString(), Toast.LENGTH_SHORT).show()
                             val flag = mydb.insertPetInoculation(inputtext.text.toString(), mydb.getPID(petname))
                             if(flag)
-                                mydb.getAllRecord(petname, binding)
+                            {
+                                mydb.getAllRecord(petname, findViewById(R.id.disTableLayout2), findViewById(R.id.inoTableLayout2))
+                                Toast.makeText(this, "보유질병을 추가했습니다.", Toast.LENGTH_SHORT).show()
+                            }
                             else
                                 Log.d("insert", "fail")
                         }

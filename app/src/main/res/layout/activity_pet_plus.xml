@@ -201,18 +201,12 @@
                     android:layout_weight="1"
                     android:text="plus" />
 
-                <Button
-                    android:id="@+id/Deletebtn1"
-                    android:layout_width="10dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:text="del" />
             </LinearLayout>
 
             <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="100dp">
+                android:layout_width="300dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center">
 
                 <TableLayout
                     android:id="@+id/disTableLayout"
@@ -243,18 +237,12 @@
                     android:layout_weight="1"
                     android:text="plus" />
 
-                <Button
-                    android:id="@+id/Deletebtn2"
-                    android:layout_width="10dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:text="del" />
             </LinearLayout>
 
             <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="100dp">
+                android:layout_width="300dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center">
 
                 <TableLayout
                     android:id="@+id/inoTableLayout"
